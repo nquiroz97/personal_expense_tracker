@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -17,6 +17,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [];
+  late Platform platform;
 
   List<Transaction>? get _recentTransactions {
     return _transactions
@@ -25,8 +26,13 @@ class _MyHomePageState extends State<MyHomePage> {
         .toList();
   }
 
+  bool _showChart = false;
+
   @override
   Widget build(BuildContext context) {
+    bool _isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -34,55 +40,123 @@ class _MyHomePageState extends State<MyHomePage> {
           "Expense Tracker",
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) {
-                return GestureDetector(
-                  onTap: () {},
-                  behavior: HitTestBehavior.opaque,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * .9,
-                    child: NewTransaction(
-                      addTransaction: _addNewTransaction,
-                    ),
-                  ),
-                );
-              });
-        },
-      ),
-      body: Column(
-        children: [
-          Chart(recentTransactions: _transactions),
-          Expanded(
-            child: _transactions.isEmpty
-                ? Column(
-                    children: [
-                      Text(
-                        'No transactions added yet',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Expanded(child: Image.asset('assets/images/waiting.png'))
-                    ],
-                  )
-                : ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      return TransactionItem(
-                        transaction: _transactions[index],
-                        removeTransaction: _deleteTransaction,
+      floatingActionButton: Platform.isAndroid
+          ? FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () {},
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * .7,
+                          child: NewTransaction(
+                            addTransaction: _addNewTransaction,
+                          ),
+                        ),
                       );
-                    },
-                    itemCount: _transactions.length,
-                  ),
-          )
-        ],
-      ),
+                    });
+              },
+            )
+          : Container(),
+      body: _isLandscape
+          ? Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Text('Show Chart'),
+                    Switch(
+                        value: _showChart,
+                        onChanged: (value) {
+                          setState(() {
+                            _showChart = value;
+                          });
+                        })
+                  ],
+                ),
+                _showChart
+                    ? Chart(
+                        recentTransactions: _recentTransactions!,
+                        isLandscape: _isLandscape,
+                      )
+                    : Container(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: _transactions.isEmpty
+                            ? Column(
+                                children: [
+                                  FittedBox(
+                                    child: Text(
+                                      'No transactions added yet',
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.05,
+                                  ),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.3,
+                                    child: Image.asset(
+                                        'assets/images/waiting.png'),
+                                  )
+                                ],
+                              )
+                            : ListView.builder(
+                                itemBuilder: (BuildContext context, int index) {
+                                  return TransactionItem(
+                                    transaction: _transactions[index],
+                                    removeTransaction: _deleteTransaction,
+                                  );
+                                },
+                                itemCount: _transactions.length,
+                              ),
+                      )
+              ],
+            )
+          : Column(
+              children: [
+                Chart(
+                  recentTransactions: _recentTransactions!,
+                  isLandscape: _isLandscape,
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  child: _transactions.isEmpty
+                      ? Column(
+                          children: [
+                            FittedBox(
+                              child: Text(
+                                'No transactions added yet',
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              child: Image.asset('assets/images/waiting.png'),
+                            )
+                          ],
+                        )
+                      : ListView.builder(
+                          itemBuilder: (BuildContext context, int index) {
+                            return TransactionItem(
+                              transaction: _transactions[index],
+                              removeTransaction: _deleteTransaction,
+                            );
+                          },
+                          itemCount: _transactions.length,
+                        ),
+                )
+              ],
+            ),
     );
   }
 

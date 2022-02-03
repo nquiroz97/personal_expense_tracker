@@ -5,6 +5,7 @@ import 'package:personal_expense_tracker/ui/chart_bar.dart';
 
 class Chart extends StatelessWidget {
   final List<Transaction> recentTransactions;
+  final bool isLandscape;
 
   double get totalSpending {
     return groupedTransactionValues.fold(0.0, (previousValue, item) {
@@ -29,14 +30,19 @@ class Chart extends StatelessWidget {
     }).reversed.toList();
   }
 
-  const Chart({Key? key, required this.recentTransactions}) : super(key: key);
+  const Chart(
+      {Key? key, required this.recentTransactions, required this.isLandscape})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 6,
-      margin: const EdgeInsets.all(20),
-      child: Expanded(
+    return Container(
+      height: isLandscape
+          ? MediaQuery.of(context).size.height * 0.60
+          : MediaQuery.of(context).size.height * 0.30,
+      child: Card(
+        elevation: 6,
+        margin: const EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: groupedTransactionValues.map((e) {

@@ -24,72 +24,79 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Add expense",
-            style: TextStyle(
-                fontSize: 20,
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          TextField(
-            controller: _title,
-            onSubmitted: (_) => _onAddTransactionCall(),
-            decoration: const InputDecoration(
-              label: Text('Title'),
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.only(
+            left: 12,
+            right: 12,
+            top: 12,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 10,
             ),
-          ),
-          TextField(
-            controller: _price,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onSubmitted: (_) => _onAddTransactionCall(),
-            decoration: const InputDecoration(
-              label: Text('Price'),
+            Text(
+              "Add expense",
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            height: 50,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(_selectedDate == null
-                      ? 'no date chosen'
-                      : DateFormat.yMd().format(_selectedDate!)),
-                ),
-                TextButton(
-                    onPressed: () => _showDatePicker(),
-                    child: const Text(
-                      'Choose date',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))
-              ],
+            const SizedBox(
+              height: 20,
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                onPressed: _onAddTransactionCall,
-                child: const Text('Add'),
+            TextField(
+              controller: _title,
+              onSubmitted: (_) => _onAddTransactionCall(),
+              decoration: const InputDecoration(
+                label: Text('Title'),
               ),
-            ],
-          )
-        ],
+            ),
+            TextField(
+              controller: _price,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              onSubmitted: (_) => _onAddTransactionCall(),
+              decoration: const InputDecoration(
+                label: Text('Price'),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(_selectedDate == null
+                        ? 'no date chosen'
+                        : DateFormat.yMd().format(_selectedDate!)),
+                  ),
+                  TextButton(
+                      onPressed: () => _showDatePicker(),
+                      child: const Text(
+                        'Choose date',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: _onAddTransactionCall,
+                  child: const Text('Add'),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
