@@ -49,109 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
           );
     final _pageBody = SafeArea(
         child: _isLandscape
-            ? Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Show Chart',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      Switch(
-                          value: _showChart,
-                          onChanged: (value) {
-                            setState(() {
-                              _showChart = value;
-                            });
-                          })
-                    ],
-                  ),
-                  _showChart
-                      ? Chart(
-                          recentTransactions: _recentTransactions!,
-                          isLandscape: _isLandscape,
-                        )
-                      : Container(
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          child: _transactions.isEmpty
-                              ? Column(
-                                  children: [
-                                    FittedBox(
-                                      child: Text(
-                                        'No transactions added yet',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.05,
-                                    ),
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.3,
-                                      child: Image.asset(
-                                          'assets/images/waiting.png'),
-                                    )
-                                  ],
-                                )
-                              : ListView.builder(
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return TransactionItem(
-                                      transaction: _transactions[index],
-                                      removeTransaction: _deleteTransaction,
-                                    );
-                                  },
-                                  itemCount: _transactions.length,
-                                ),
-                        )
-                ],
-              )
-            : Column(
-                children: [
-                  Chart(
-                    recentTransactions: _recentTransactions!,
-                    isLandscape: _isLandscape,
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    child: _transactions.isEmpty
-                        ? Column(
-                            children: [
-                              FittedBox(
-                                child: Text(
-                                  'No transactions added yet',
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                              ),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.05,
-                              ),
-                              Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.3,
-                                child: Image.asset('assets/images/waiting.png'),
-                              )
-                            ],
-                          )
-                        : ListView.builder(
-                            itemBuilder: (BuildContext context, int index) {
-                              return TransactionItem(
-                                transaction: _transactions[index],
-                                removeTransaction: _deleteTransaction,
-                              );
-                            },
-                            itemCount: _transactions.length,
-                          ),
-                  )
-                ],
-              ));
+            ? _buildLandscapeContent(_isLandscape)
+            : _buildPortraitContent(_isLandscape));
 
     return Platform.isIOS
         ? CupertinoPageScaffold(
@@ -172,6 +71,105 @@ class _MyHomePageState extends State<MyHomePage> {
                 : Container(),
             body: _pageBody,
           );
+  }
+
+  Widget _buildLandscapeContent(bool isLandscape) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              'Show Chart',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Switch(
+                value: _showChart,
+                onChanged: (value) {
+                  setState(() {
+                    _showChart = value;
+                  });
+                })
+          ],
+        ),
+        _showChart
+            ? Chart(
+                recentTransactions: _recentTransactions!,
+                isLandscape: isLandscape,
+              )
+            : Container(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: _transactions.isEmpty
+                    ? Column(
+                        children: [
+                          FittedBox(
+                            child: Text(
+                              'No transactions added yet',
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            child: Image.asset('assets/images/waiting.png'),
+                          )
+                        ],
+                      )
+                    : ListView.builder(
+                        itemBuilder: (BuildContext context, int index) {
+                          return TransactionItem(
+                            transaction: _transactions[index],
+                            removeTransaction: _deleteTransaction,
+                          );
+                        },
+                        itemCount: _transactions.length,
+                      ),
+              )
+      ],
+    );
+  }
+
+  Widget _buildPortraitContent(bool isLandscape) {
+    return Column(
+      children: [
+        Chart(
+          recentTransactions: _recentTransactions!,
+          isLandscape: isLandscape,
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.4,
+          child: _transactions.isEmpty
+              ? Column(
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        'No transactions added yet',
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: Image.asset('assets/images/waiting.png'),
+                    )
+                  ],
+                )
+              : ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    return TransactionItem(
+                      transaction: _transactions[index],
+                      removeTransaction: _deleteTransaction,
+                    );
+                  },
+                  itemCount: _transactions.length,
+                ),
+        )
+      ],
+    );
   }
 
   void _displayBottomSheet(BuildContext context) {
