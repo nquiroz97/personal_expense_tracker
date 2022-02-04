@@ -33,20 +33,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     bool _isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    final dynamic _appBar = Platform.isIOS
-        ? CupertinoNavigationBar(
-            trailing: CupertinoButton(
-                child: const Icon(CupertinoIcons.add),
-                onPressed: () => _displayBottomSheet(context)),
-            middle: const Text(
-              "Expense Tracker",
-            ),
-          )
-        : AppBar(
-            title: const Text(
-              "Expense Tracker",
-            ),
-          );
+    final dynamic _appBar =
+        Platform.isIOS ? _buildCupertinoAppBar() : _buildMaterialAppBar();
     final _pageBody = SafeArea(
         child: _isLandscape
             ? _buildLandscapeContent(_isLandscape)
@@ -71,6 +59,25 @@ class _MyHomePageState extends State<MyHomePage> {
                 : Container(),
             body: _pageBody,
           );
+  }
+
+  Widget _buildCupertinoAppBar() {
+    return CupertinoNavigationBar(
+      trailing: CupertinoButton(
+          child: const Icon(CupertinoIcons.add),
+          onPressed: () => _displayBottomSheet(context)),
+      middle: const Text(
+        "Expense Tracker",
+      ),
+    );
+  }
+
+  Widget _buildMaterialAppBar() {
+    return AppBar(
+      title: const Text(
+        "Expense Tracker",
+      ),
+    );
   }
 
   Widget _buildLandscapeContent(bool isLandscape) {
