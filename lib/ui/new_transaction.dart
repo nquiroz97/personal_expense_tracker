@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:personal_expense_tracker/ui/adaptive_button.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addTransaction;
-  NewTransaction({Key? key, required this.addTransaction}) : super(key: key);
+  const NewTransaction({Key? key, required this.addTransaction})
+      : super(key: key);
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -74,12 +76,10 @@ class _NewTransactionState extends State<NewTransaction> {
                         ? 'no date chosen'
                         : DateFormat.yMd().format(_selectedDate!)),
                   ),
-                  TextButton(
-                      onPressed: () => _showDatePicker(),
-                      child: const Text(
-                        'Choose date',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))
+                  AdaptiveButton(
+                    helperFunction: _showDatePicker,
+                    text: 'Choose date',
+                  )
                 ],
               ),
             ),
